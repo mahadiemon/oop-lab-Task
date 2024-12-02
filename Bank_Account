@@ -1,0 +1,73 @@
+from abc import ABC, abstractmethod
+
+
+class InvalidAmountException(Exception):
+    def __init__(self, message="Invalid amount! Amount cannot be negative."):
+        super().__init__(message)
+
+class ValueErrorException(Exception):
+    def __init__(self, message="Insufficient balance!"):
+        super().__init__(message)
+
+
+class BankAccount(ABC):
+    @abstractmethod
+    def deposit(self, amount):
+        pass
+
+    @abstractmethod
+    def withdraw(self, amount):
+        pass
+
+
+class AccountHolder(BankAccount):
+    def __init__(self, name, balance, acc_num):
+        self.name = name  # Public attribute
+        self._balance = balance  # Protected attribute
+        self.__acc_num = acc_num  # Private attribute
+
+    # Override deposit method
+    def deposit(self, amount):
+        if amount < 0:
+            raise InvalidAmountException()
+        self._balance += amount
+        print(f"{amount} deposited successfully. New balance: {self._balance}")
+
+    # Override withdraw method
+    def withdraw(self, amount):
+        if amount < 0:
+            raise InvalidAmountException()
+        if amount > self._balance:
+            raise ValueErrorException()
+        self._balance -= amount
+        print(f"{amount} withdrawn successfully. New balance: {self._balance}")
+
+    # Get
+    def get_acc_num(self):
+        return self.__acc_num
+
+    # Set
+    def set_acc_num(self, acc_num):
+        if not isinstance(acc_num, str) or len(acc_num) == 0:
+            raise InvalidAmountException("Account number must be a non-empty string.")
+        self.__acc_num = acc_num
+
+#example
+try:
+    account = AccountHolder(name="Mahadi Emon", balance=500, acc_num="1709035628")
+    account.deposit(100)
+    account.withdraw(200)
+    account.withdraw(1000)
+
+except InvalidAmountException:
+    print("Invalid amount! Amount cannot be negative.")  
+
+except ValueErrorException:
+    print("Insufficient balance!")
+
+except Exception as e:
+    print(e)
+
+
+except:
+    print("Error")
